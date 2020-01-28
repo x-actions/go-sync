@@ -21,17 +21,17 @@ ENV LANGUAGE en_US.UTF-8
 
 RUN apk update && apk add --no-cache git bash go && rm -rf /var/cache/apk/*
 
-RUN export GOPATH=`pwd` && \
-    mkdir src && \
-    cd src && \
+RUN mkdir -p /github/actions && \
+    cd /github/actions && \
     git clone https://github.com/x-actions/cdn-sync.git && \
-    mv cdn-sync cdn-sync.bak && \
-    cp -rp cdn-sync.bak/src/cdn_sync . && \
-    rm -rf cdn-sync.bak && \
-    cd cdn_sync && \
+    cd cdn-sync && \
+    export GOPATH=`pwd` && \
+    cd src/cdn_sync && \
     # GOOS=linux GOARCH=amd64 go build -tags netgo && \
     go build && \
-    cp cdn_sync /usr/local/bin
+    cp cdn_sync /usr/local/bin && \
+    cd / && \
+    rm -rf /github/actions
 
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
