@@ -2,3 +2,4 @@
 pkg/*
 src/cdn_sync/cdn_sync
 src/cdn_sync/.idea
+src/cdn_sync/vendor
