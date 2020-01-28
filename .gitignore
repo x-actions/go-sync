@@ -1,0 +1,4 @@
+.idea
+pkg/*
+src/cdn_sync/cdn_sync
+src/cdn_sync/.idea
