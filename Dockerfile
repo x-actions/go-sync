@@ -19,7 +19,7 @@ ENV LC_ALL C.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-RUN apk update && apk add --no-cache git bash go && rm -rf /var/cache/apk/*
+RUN apk update && apk add --no-cache git bash go dep && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /github/actions && \
     cd /github/actions && \
@@ -27,6 +27,7 @@ RUN mkdir -p /github/actions && \
     cd cdn-sync && \
     export GOPATH=`pwd` && \
     cd src/cdn_sync && \
+    dep ensure && \
     # GOOS=linux GOARCH=amd64 go build -tags netgo && \
     go build && \
     cp cdn_sync /usr/local/bin && \
