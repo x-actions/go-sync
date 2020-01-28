@@ -1,8 +1,10 @@
 # https://github.com/actions/labeler/blob/master/README.md
 
-# Add 'repo' label to any root file changes
-repo:
-  - ./*
+code:
+  - ./src/*
 
 license:
   - ./LICENSE
+
+actions:
+  - .github/*
