@@ -6,6 +6,7 @@ ACCESSKEYID=${ACCESSKEYID:-""}
 ACCESSKEYSECRET=${ACCESSKEYSECRET:-""}
 ENDPOINT=${ENDPOINT:-""}
 BUCKETNAME=${BUCKETNAME:-""}
+CACHEFILE=${CACHEFILE:-""}
 SUB_DIR=${SUB_DIR:-"public"}
 
 if test -z "${ACCESSKEYID}"; then
@@ -36,6 +37,7 @@ cdn_sync \
   -accessKeySecret "${ACCESSKEYSECRET}" \
   -endpoint "${ENDPOINT}" \
   -bucketName "${BUCKETNAME}" \
+  -cacheFile "${CACHEFILE}" \
   -sourceDir "/github/workspace/${SUB_DIR}"
 
 echo "## Done. ##################"
