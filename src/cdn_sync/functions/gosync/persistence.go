@@ -104,11 +104,20 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 	if cacheFile == "" {
 		cacheFile = "/tmp/" + aliyunOSSConfig.BucketName + ".json"
 	}
-	fmt.Println("Begin to sync", sourceDir, "files, metaKey is", metaKey, "cacheFile is", cacheFile, "exclude file or direct is", excludeList)
+	fmt.Println("Begin to sync", sourceDir, "files, metaKey is", metaKey, ", cacheFile is", cacheFile, ", exclude file or direct is", excludeList)
 
 	// read local files
+	_filesMap := make(map[string]interface{})
+	ReadDir(_filesMap, sourceDir, "")
+
 	filesMap := make(map[string]interface{})
-	ReadDir(filesMap, sourceDir, "")
+	for k, _ := range _filesMap {
+		if isStartWitch(k, excludeList) {
+			fmt.Println("Skip", k, "by exclude rule.")
+			continue
+		}
+		filesMap[k] = _filesMap[k]
+	}
 
 	// list oss object metadata
 	objectsMap := make(map[string]interface{})
@@ -134,10 +143,6 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 	// do upload new file
 	fmt.Println("Do upload new files:")
 	for k, v := range justM1 {
-		if isStartWitch(k, excludeList) {
-			fmt.Println("Skip", k, "by exclude rule.")
-			continue
-		}
 		metasMap := make(map[string]interface{})
 		metasMap[metaKey] = v
 		err := aliyun.PutObjectFromFile(aliyunOSSConfig, k, sourceDir + "/" + k, metasMap)
@@ -150,10 +155,6 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 
 	fmt.Println("Do update diff files:")
 	for k, v := range diffM1AndM2 {
-		if isStartWitch(k, excludeList) {
-			fmt.Println("Skip", k, "by exclude rule.")
-			continue
-		}
 		metasMap := make(map[string]interface{})
 		metasMap[metaKey] = v
 		err := aliyun.PutObjectFromFile(aliyunOSSConfig, k, sourceDir + "/" + k, metasMap)
