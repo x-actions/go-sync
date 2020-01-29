@@ -18,6 +18,7 @@ a tools sync code to cdn, like aliyun oss.
         ACCESSKEYSECRET: ${{ secrets.ACCESSKEYSECRET }}
         ENDPOINT: "<ENDPOINT>"
         BUCKETNAME: "<BUCKETNAME>"
+        CACHEFILE: "<some-path/<BUCKETNAME>.json>"
         SUB_DIR: "public"
 ```
 
