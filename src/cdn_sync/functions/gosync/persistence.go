@@ -88,13 +88,23 @@ func CacheRead(filename string) (map[string]interface{}, error) {
 	return m, nil
 }
 
-func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey, cacheFile string) error {
+func isStartWitch(str string, excludeList []string) bool {
+	for _, e := range excludeList {
+		if strings.HasPrefix(str, e){
+			return true
+		}
+	}
+	return false
+}
+
+func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey, cacheFile string, excludeList []string) error {
 	if metaKey == "" {
 		metaKey = "Content-Md5sum"
 	}
 	if cacheFile == "" {
 		cacheFile = "/tmp/" + aliyunOSSConfig.BucketName + ".json"
 	}
+	fmt.Println("Begin to sync", sourceDir, "files, metaKey is", metaKey, "cacheFile is", cacheFile, "exclude file or direct is", excludeList)
 
 	// read local files
 	filesMap := make(map[string]interface{})
@@ -121,10 +131,13 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 		aliyun.HandleError(err)
 	}
 
-	// do upload
-	fmt.Println("new file Map:")
+	// do upload new file
+	fmt.Println("Do upload new files:")
 	for k, v := range justM1 {
-		fmt.Println(k, v)
+		if isStartWitch(k, excludeList) {
+			fmt.Println("Skip", k, "by exclude rule.")
+			continue
+		}
 		metasMap := make(map[string]interface{})
 		metasMap[metaKey] = v
 		err := aliyun.PutObjectFromFile(aliyunOSSConfig, k, sourceDir + "/" + k, metasMap)
@@ -132,12 +145,15 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 			aliyun.HandleError(err)
 			fmt.Println("Upload OSS Object", k, "Error:", err)
 		}
-		fmt.Println("Upload OSS Object", k)
+		fmt.Println("Upload OSS Object", k, "Done.")
 	}
 
-	fmt.Println("update file Map:")
+	fmt.Println("Do update diff files:")
 	for k, v := range diffM1AndM2 {
-		fmt.Println(k, v)
+		if isStartWitch(k, excludeList) {
+			fmt.Println("Skip", k, "by exclude rule.")
+			continue
+		}
 		metasMap := make(map[string]interface{})
 		metasMap[metaKey] = v
 		err := aliyun.PutObjectFromFile(aliyunOSSConfig, k, sourceDir + "/" + k, metasMap)
@@ -147,9 +163,9 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 		}
 		fmt.Println("Update OSS Object", k)
 	}
-	fmt.Println("delete file Map:")
-	for k, v := range justM2 {
-		fmt.Println(k, v)
+
+	fmt.Println("Do delete files:")
+	for k, _ := range justM2 {
 		err := aliyun.DeleteObject(aliyunOSSConfig, k)
 		if err != nil {
 			fmt.Println("Delete OSS Object", k, "Error:", err)
@@ -166,6 +182,11 @@ func SyncLocalToOSS(aliyunOSSConfig *aliyun.AliyunOSSConfig, sourceDir, metaKey,
 	err = CacheWrite(filesMap, cacheFile)
 	if err != nil {
 		fmt.Println("cache file map to file fail.")
+	} else {
+		fmt.Println("write cache success! path:", cacheFile)
 	}
+
+	fmt.Println("Sync done! files is", filesMap)
+
 	return nil
 }

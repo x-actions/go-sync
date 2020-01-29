@@ -19,6 +19,7 @@ a tools sync code to cdn, like aliyun oss.
         ENDPOINT: "<ENDPOINT>"
         BUCKETNAME: "<BUCKETNAME>"
         CACHEFILE: "<some-path/<BUCKETNAME>.json>"
+        EXCLUDE: "str1,str2"
         SUB_DIR: "public"
 ```
 
