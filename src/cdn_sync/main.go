@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 var cdntype string
@@ -15,6 +16,7 @@ var accessKeyID string
 var accessKeySecret string
 var sourceDir string
 var cacheFile string
+var exclude string
 
 
 func init() {
@@ -25,6 +27,7 @@ func init() {
 	flag.StringVar(&accessKeySecret, "accessKeySecret", "", "CDN Access Key Secret")
 	flag.StringVar(&sourceDir, "sourceDir", "", "the source dir public to cdn")
 	flag.StringVar(&cacheFile, "cacheFile", "", "the cache file path")
+	flag.StringVar(&exclude, "exclude", "", "exclude file or dir, comma-separated string")
 
 	flag.Parse()
 }
@@ -52,7 +55,8 @@ func main() {
 		if cacheFile == "" {
 			cacheFile = "/tmp/" + aliyunOSSConfig.BucketName + ".json"
 		}
-		err = gosync.SyncLocalToOSS(aliyunOSSConfig, sourceDir, metaKey, cacheFile)
+		excludeList := strings.Split(exclude, ",")
+		err = gosync.SyncLocalToOSS(aliyunOSSConfig, sourceDir, metaKey, cacheFile, excludeList)
 	}
 	if err != nil {
 		fmt.Println("err:", err)
