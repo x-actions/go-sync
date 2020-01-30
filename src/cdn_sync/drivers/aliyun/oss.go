@@ -77,7 +77,6 @@ func PutObjectFromFile(aliyunOSSConfig *AliyunOSSConfig, objectKey, filePath str
 	}
 
 	for k, v := range metasMap {
-		fmt.Println("k:", k, "v:", v)
 		switch v.(type) {
 		case string:
 			err = bucket.SetObjectMeta(objectKey, oss.Meta(k, v.(string)))
