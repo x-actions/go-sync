@@ -1,6 +1,7 @@
 package gosync
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -62,13 +63,16 @@ func CacheWrite(m map[string]interface{}, cacheFile string) error {
 		defer f.Close()
 	}
 
-	j, err := json.Marshal(m)
+	_j, err := json.Marshal(m)
 	if err != nil {
 		fmt.Println("json.Marshal failed:", err)
 		return err
 	}
 
-	err = ioutil.WriteFile(cacheFile, []byte(j), 0644)
+	var j bytes.Buffer
+	err = json.Indent(&j, _j, "", "  ")
+
+	err = ioutil.WriteFile(cacheFile, []byte(j.String()), 0644)
 	if err != nil {
 		panic(err)
 		return err
