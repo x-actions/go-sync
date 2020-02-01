@@ -25,6 +25,7 @@ RUN mkdir -p /github/actions && \
     cd /github/actions && \
     git clone https://github.com/x-actions/cdn-sync.git && \
     cd cdn-sync && \
+    git checkout release/v1 && \
     export GOPATH=`pwd` && \
     cd src/cdn_sync && \
     dep ensure && \

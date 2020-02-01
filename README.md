@@ -11,7 +11,7 @@ a tools sync code to cdn, like aliyun oss.
 
 ```
     - name: Sync code to CDN
-      uses: x-actions/cdn-sync@master
+      uses: x-actions/cdn-sync@release/v1
       env:
         CDNTYPE: "aliyun"
         ACCESSKEYID: ${{ secrets.ACCESSKEYID }}
