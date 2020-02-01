@@ -20,6 +20,8 @@ jobs:
     - name: Get dependencies And Build
       run: |
         export GOPATH=`pwd`
+        mkdir bin
+        mkdir pkgs
         cd src/cdn_sync
         go get -v -t -d ./...
         if [ -f Gopkg.toml ]; then
