@@ -1,0 +1,28 @@
+name: 'CDN Sync'
+description: 'Github Action for Sync Code to CDN'
+author: 'xiexianbin <me@xiexianbin>'
+inputs: 
+  CDNTYPE:
+    description: 'cdn type'
+    default: 'aliyun'
+  ACCESSKEYID:
+    description: 'CDN Access Key ID'
+  ACCESSKEYSECRET:
+    description: 'CDN Access Key Secret'
+  ENDPOINT:
+    description: 'CDN Bucket Endpoint'
+  BUCKETNAME:
+    description: 'CDN Bucket Name'
+  CACHEFILE:
+    description: 'the cache file path'
+  EXCLUDE:
+    description: 'exclude file or dir, comma-separated string'
+  SUB_DIR:
+    description: 'the source dir public to cdn'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+
+branding:
+  color: 'blue'
+  icon: 'sync'

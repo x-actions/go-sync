@@ -1,4 +1,4 @@
-# Github Action for sync code to cdn
+# Github Action for Sync Code to CDN
 
 a tools sync code to cdn, like aliyun oss.
 
