@@ -1,5 +1,5 @@
 .idea
 pkg/*
-src/cdn_sync/cdn_sync
-src/cdn_sync/.idea
-src/cdn_sync/vendor
+gsync/.idea
+gsync/bin
+gsync/vendor/github.com/xiexianbin
