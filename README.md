@@ -10,8 +10,8 @@ a tools sync code to cdn, like aliyun oss.
 ## How to Use
 
 ```
-    - name: Sync code to CDN
-      uses: x-actions/cdn-sync@master
+    - name: Sync Code to CDN
+      uses: x-actions/go-sync@master
       env:
         CDNTYPE: "aliyun"
         ACCESSKEYID: ${{ secrets.ACCESSKEYID }}
@@ -21,24 +21,4 @@ a tools sync code to cdn, like aliyun oss.
         CACHEFILE: "<some-path/<BUCKETNAME>.json>"
         EXCLUDE: "str1,str2"
         SUB_DIR: "public"
-```
-
-## Options
-
-```
-Usage of ./cdn_sync:
-  -accessKeyID string
-    	CDN Access Key ID
-  -accessKeySecret string
-    	CDN Access Key Secret
-  -bucketName string
-    	CDN Bucket Name
-  -cacheFile string
-    	the cache file path
-  -cdntype string
-    	cdn type (aliyun)
-  -endpoint string
-    	CDN Bucket Endpoint
-  -sourceDir string
-    	the source dir public to cdn
 ```

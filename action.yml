@@ -1,7 +1,7 @@
-name: 'CDN Sync'
+name: 'go-sync'
 description: 'Github Action for Sync Code to CDN'
 author: 'xiexianbin <me@xiexianbin>'
-inputs: 
+inputs:
   CDNTYPE:
     description: 'cdn type'
     default: 'aliyun'
