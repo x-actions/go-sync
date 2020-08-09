@@ -1,5 +1,8 @@
 .idea
+.history
 pkg/*
+gsync/*.log
 gsync/.idea
 gsync/bin
+gsync/gsync
 gsync/vendor/github.com/xiexianbin

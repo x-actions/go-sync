@@ -19,15 +19,15 @@ clean:
 build:
 	$(GOBUILD) -o bin/$(BINARY_NAME) -v
 
-build-linux:
+linux:
 	if [ ! -d bin/$(DIR_LINUX) ]; then mkdir -p bin/$(DIR_LINUX); fi
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o bin/$(DIR_LINUX)/$(BINARY_NAME) -v
 	cp README.md ../LICENSE bin/$(DIR_LINUX)/;cd bin; tar -zcvf $(DIR_LINUX).tar.gz $(DIR_LINUX)
-build-mac:
+mac:
 	if [ ! -d bin/$(DIR_MAC) ]; then mkdir -p bin/$(DIR_MAC); fi
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(GOBUILD) -o bin/$(DIR_MAC)/$(BINARY_NAME) -v
 	cd bin; tar -zcvf $(DIR_MAC).tar.gz $(DIR_MAC)
-build-windows:
+windows:
 	if [ ! -d bin/$(DIR_WIN) ]; then mkdir -p bin/$(DIR_WIN); fi
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 $(GOBUILD) -o bin/$(DIR_WIN)/$(BINARY_NAME) -v
 	cd bin; tar -zcvf $(DIR_WIN).tar.gz $(DIR_WIN)

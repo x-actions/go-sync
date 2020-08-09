@@ -8,6 +8,9 @@
 ```
 git clone https://github.com/x-actions/gsync.git
 cd gsync/gsync
+
+make build/linux/mac/windows
+or
 GOOS=linux GOARCH=amd64 go build -tags netgo
 ```
 
@@ -39,8 +42,8 @@ demo:
 ```
 ./gsync \
   -cdnType "aliyun" \
-  -accessKeyID "<accessKeyID>>" \
-  -accessKeySecret "<accessKeySecret>>" \
+  -accessKeyID "<accessKeyID>" \
+  -accessKeySecret "<accessKeySecret>" \
   -endpoint "oss-cn-hangzhou.aliyuncs.com" \
   -bucketName "dev-blog-xiexianbin-cn" \
   -sourceDir <some-dir>

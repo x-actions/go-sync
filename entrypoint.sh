@@ -32,8 +32,8 @@ fi
 
 echo "## sync to cdn ##################"
 
-cdn_sync \
-  -cdntype "${CDNTYPE}" \
+gsync \
+  -cdnType "${CDNTYPE}" \
   -accessKeyID "${ACCESSKEYID}" \
   -accessKeySecret "${ACCESSKEYSECRET}" \
   -endpoint "${ENDPOINT}" \
