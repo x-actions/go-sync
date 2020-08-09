@@ -1,4 +1,4 @@
-module github.com/x-actions/gsync/gsync
+module github.com/x-actions/go-sync/gsync
 
 go 1.14
 
