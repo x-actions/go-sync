@@ -23,7 +23,7 @@ RUN apk update && apk add --no-cache git git-lfs bash wget curl openssh-client t
 
 RUN mkdir /usr/local/gsync/ && \
     cd /usr/local/gsync/ && \
-    curl -s https://api.github.com/repos/x-actions/gsync/releases/latest | \
+    curl -s https://api.github.com/repos/x-actions/go-gsync/releases/latest | \
     sed -r -n '/browser_download_url/{/linux.tar.gz/{s@[^:]*:[[:space:]]*"([^"]*)".*@\1@g;p;q}}' | xargs wget && \
     tar xzf *linux.tar.gz -C /usr/local/gsync/ && \
     cp /usr/local/gsync/gsync_*_linux/gsync /usr/local/bin/ && \
