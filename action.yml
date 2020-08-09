@@ -1,4 +1,4 @@
-name: 'gsync'
+name: 'go-sync'
 description: 'Github Action for Sync Code to CDN'
 author: 'xiexianbin <me@xiexianbin>'
 inputs:
