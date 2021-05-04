@@ -6,3 +6,4 @@ gsync/.idea
 gsync/bin
 gsync/gsync
 gsync/vendor/github.com/xiexianbin
+.DS_Store
