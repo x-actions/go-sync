@@ -1,0 +1,5 @@
+bin
+aliyun
+utils
+vendor
+*.go

@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+DEBUG="${INPUT_DEBUG}"
+
+if [[ X"$DEBUG" == X"true" ]]; then
+  set -x
+  DEBUG="true"
+else
+  DEBUG="false"
+fi
+
 CDNTYPE=${CDNTYPE:-"aliyun"}
 ACCESSKEYID=${ACCESSKEYID:-""}
 ACCESSKEYSECRET=${ACCESSKEYSECRET:-""}
@@ -29,6 +38,13 @@ if test -z "${BUCKETNAME}"; then
   echo "BUCKETNAME is nil, skip!"
   exit -1
 fi
+
+echo "## Check User ##################"
+whoami
+
+echo "## Check Package Version ##################"
+bash --version
+gsync -v
 
 echo "## sync to cdn ##################"
 
