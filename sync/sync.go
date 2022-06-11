@@ -64,7 +64,7 @@ func (s *Sync) uploadFiles(m map[string]interface{}, metaKey, sourceDir, action 
 	wg := sync.WaitGroup{}
 	wg.Add(concurrentmap.ShareCount)
 
-	logger.Debugf("Do upload %s files:", action)
+	logger.Infof("Do upload %s files:", action)
 	for i := 0; i < concurrentmap.ShareCount; i++ {
 		// pre shared map, new goroutine to statics
 		go func(ms *concurrentmap.Shared, index int) {
@@ -92,7 +92,7 @@ func (s *Sync) uploadFiles(m map[string]interface{}, metaKey, sourceDir, action 
 	// wait all goroutine stop
 	wg.Wait()
 	ch <- true
-	logger.Printf("upload %s files Done", action)
+	logger.Infof("upload %s files Done", action)
 }
 
 // syncDelFiles Do delete files from aliyun oss
@@ -106,11 +106,13 @@ func (s *Sync) deleteFiles(m map[string]interface{}, ch chan bool) {
 	// new ConcurrentMap
 	cMap := concurrentmap.New()
 
+	skipCount := 0
 	// set key and value to cMap
 	for k, v := range m {
 		// skip delete special objects
 		if utils.IsStartWitch(k, s.ExcludeDeleteObjectsList) {
-			logger.Debugf("skip %s by exclude-delete-objects rule", k)
+			logger.Debugf("skip delete object %s by exclude-delete-objects rule", k)
+			skipCount++
 			continue
 		}
 
@@ -147,7 +149,7 @@ func (s *Sync) deleteFiles(m map[string]interface{}, ch chan bool) {
 	wg.Wait()
 	ch <- true
 
-	logger.Infof("delete %d files Done", len(m))
+	logger.Infof("delete %d files Done", len(m)-skipCount)
 }
 
 // Do do sync logic
@@ -163,7 +165,7 @@ func (s *Sync) Do(metaKey string) error {
 	filesMap := make(map[string]interface{})
 	for k := range _filesMap {
 		if utils.IsStartWitch(k, s.ExcludeList) {
-			logger.Debugf("skip %s by exclude rule", k)
+			logger.Debugf("skip sync %s by exclude rule", k)
 			continue
 		}
 		filesMap[k] = _filesMap[k]

@@ -22,8 +22,8 @@ a tools sync code to cdn, like aliyun oss.
       uses: x-actions/go-sync@main
       with:
         provider: "aliyun"
-        access-key: ${{ secrets.ACCESSKEYID }}
-        access-secret: ${{ secrets.ACCESSKEYSECRET }}
+        access_key: ${{ secrets.ACCESSKEYID }}
+        access_secret: ${{ secrets.ACCESSKEYSECRET }}
         endpoint: "<ENDPOINT>"
         bucket: "<BUCKETNAME>"
         source: "/github/workspace/public"
@@ -36,16 +36,16 @@ a tools sync code to cdn, like aliyun oss.
       uses: x-actions/go-sync@main
       with:
         provider: "aliyun"
-        access-key: ${{ secrets.ACCESSKEYID }}
-        access-secret: ${{ secrets.ACCESSKEYSECRET }}
+        access_key: ${{ secrets.ACCESSKEYID }}
+        access_secret: ${{ secrets.ACCESSKEYSECRET }}
         endpoint: "<ENDPOINT>"
         bucket: "<BUCKETNAME>"
         cache: "<some-path/<BUCKETNAME>.json>"
         exclude: "str1,str2"  # .git,.DS_Store
         source: "/github/workspace/public"
-        ignore-expr: ""  # "<li>Build <small>&copy; .*</small></li>"
-        delete-objects: true
-        exclude-delete-objects: "<relative-of-source-path>,<relative-of-source-file>"
+        ignore_expr: ""  # "<li>Build <small>&copy; .*</small></li>"
+        delete_objects: true
+        exclude_delete_objects: "<relative-of-source-path>,<relative-of-source-file>"
 ```
 
 ### Usage as command line
