@@ -99,7 +99,7 @@ func (s *Sync) uploadFiles(m map[string]interface{}, metaKey, sourceDir, action 
 func (s *Sync) deleteFiles(m map[string]interface{}, ch chan bool) {
 	if s.DeleteObjects == false {
 		ch <- true
-		logger.Infof("Skip delete %d files by delete-objects==false", len(m))
+		logger.Infof("skip delete %d objects by delete-objects==false", len(m))
 		return
 	}
 

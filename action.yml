@@ -2,14 +2,18 @@ name: 'go-sync'
 description: 'Github Action for Sync Code to CDN'
 author: 'xiexianbin <me@xiexianbin>'
 inputs:
+  debug:
+    description: 'Enable the debug flag to show detail log'
+    default: 'false'
+    required: false
   provider:
     description: 'cdn type'
     default: 'aliyun'
     required: true
-  access-key:
+  access_key:
     description: 'CDN Access Key ID'
     required: true
-  access-secret:
+  access_secret:
     description: 'CDN Access Key Secret'
     required: true
   bucket:
@@ -27,14 +31,14 @@ inputs:
   exclude:
     description: 'exclude file or dir, comma-separated string'
     required: false
-  ignore-expr:
+  ignore_expr:
     description: 'ignore expression string, comma-separated string, replace by empty string when calculate md5 summary'
     required: false
-  delete-objects:
+  delete_objects:
     description: 'auto delete Object which not in source dir'
     default: 'true'
     required: false
-  exclude-delete-objects:
+  exclude_delete_objects:
     description: 'exclude file or dir to delete in cdn provider, comma-separated string'
     required: false
 runs:
