@@ -16,7 +16,9 @@ package main
 
 import "github.com/xiexianbin/golib/logger"
 
+// Version soft version, default is main, release version like "v1.2.0"
+const Version = "main"
+
 func showVersion() {
-	//logger.Print("v1.2.0")
-	logger.Print("main")
+	logger.Print(Version)
 }

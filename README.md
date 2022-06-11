@@ -50,12 +50,13 @@ make all
 
 ```
 ./gsync \
-  -cdnType "aliyun" \
-  -accessKeyID ${ALICLOUD_ACCESS_KEY} \
-  -accessKeySecret ${ALICLOUD_SECRET_KEY} \
+  -provider "aliyun" \
+  -access-key ${ALICLOUD_ACCESS_KEY} \
+  -access-secret ${ALICLOUD_SECRET_KEY} \
+  -bucket "dev-blog-xiexianbin-cn" \
   -endpoint "oss-cn-hangzhou.aliyuncs.com" \
-  -bucketName "dev-blog-xiexianbin-cn" \
-  -sourceDir "/Users/xiexianbin/workspace/code/github.com/xiexianbin/note/public"
+  -source "/Users/xiexianbin/workspace/code/github.com/xiexianbin/note/public" \
+  -exclude ".git"
 ```
 
 ## Others

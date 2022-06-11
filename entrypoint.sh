@@ -40,7 +40,7 @@ gsync -v
 echo "## sync to cdn ##################"
 
 gsync \
-  -d "${DEBUG}" \
+  -d="${DEBUG}" \
   -provider "${INPUT_PROVIDER}" \
   -access-key "${INPUT_ACCESS_KEY}" \
   -access-secret "${INPUT_ACCESS_SECRET}" \

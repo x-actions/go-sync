@@ -24,15 +24,15 @@ import (
 )
 
 var (
-	provider        string
-	endpoint        string
-	bucketName      string
-	accessKeyID     string
-	accessKeySecret string
-	sourceDir       string
-	cacheFile       string
-	exclude         string
-	excludeList     []string
+	provider     string
+	endpoint     string
+	bucket       string
+	accessKey    string
+	accessSecret string
+	source       string
+	cacheFile    string
+	exclude      string
+	excludeList  []string
 
 	debug   bool
 	help    bool
@@ -43,10 +43,10 @@ var (
 func init() {
 	flag.StringVar(&provider, "provider", "aliyun", "cdn type (only support aliyun.)")
 	flag.StringVar(&endpoint, "endpoint", "oss-cn-shanghai.aliyuncs.com", "CDN Bucket Endpoint")
-	flag.StringVar(&bucketName, "bucket", "", "CDN Bucket Name")
-	flag.StringVar(&accessKeyID, "access-key", "", "CDN Access Key ID")
-	flag.StringVar(&accessKeySecret, "access-secret", "", "CDN Access Key Secret")
-	flag.StringVar(&sourceDir, "source", "", "the source dir public to cdn")
+	flag.StringVar(&bucket, "bucket", "", "CDN Bucket Name")
+	flag.StringVar(&accessKey, "access-key", "", "CDN Access Key ID")
+	flag.StringVar(&accessSecret, "access-secret", "", "CDN Access Key Secret")
+	flag.StringVar(&source, "source", "", "the source dir public to cdn")
 	flag.StringVar(&cacheFile, "cache", "/tmp/<bucketName>.json", "the cache file path")
 	flag.StringVar(&exclude, "exclude", "", "exclude file or dir in sourceDir, comma-separated string")
 
@@ -56,7 +56,7 @@ func init() {
 	flag.BoolVar(&version, "v", false, "show version")
 
 	flag.Usage = func() {
-		logger.Print("Usage: gsync -h\n")
+		logger.Print("Usage: gsync -d=true\n")
 		flag.PrintDefaults()
 	}
 
@@ -65,14 +65,24 @@ func init() {
 
 func parseParams() {
 	if cacheFile == "" {
-		cacheFile = fmt.Sprintf("/tmp/%s.json", bucketName)
+		cacheFile = fmt.Sprintf("/tmp/%s.json", bucket)
 	}
 
 	if exclude != "" {
 		excludeList = strings.Split(exclude, ",")
 	}
 
-	if sourceDir == "" {
+	if accessKey == "" || accessSecret == "" {
+		logger.Print("access-key or access-secret is empty.")
+		os.Exit(1)
+	}
+
+	if bucket == "" {
+		logger.Print("bucket mame is empty.")
+		os.Exit(1)
+	}
+
+	if source == "" {
 		logger.Print("source dir is empty.")
 		os.Exit(1)
 	}
@@ -90,18 +100,14 @@ func main() {
 	}
 
 	if verbose == true || debug == true {
+		logger.Print("run with Debug model...")
 		logger.SetLogLevel(logger.DEBUG)
-	}
-
-	if len(os.Args) < 2 {
-		flag.Usage()
-		os.Exit(1)
 	}
 
 	parseParams()
 
 	var err error
-	s, err := sync.New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir, cacheFile, excludeList)
+	s, err := sync.New(provider, endpoint, bucket, accessKey, accessSecret, source, cacheFile, excludeList)
 	if err != nil {
 		logger.Errorf("init sync err: %s", err)
 		os.Exit(1)
