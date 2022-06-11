@@ -36,6 +36,9 @@ func TestSync(t *testing.T) {
 		os.Getenv("ALICLOUD_SECRET_KEY"),
 		sourceDir,
 		"/tmp/test.json",
+		[]string{},
+		[]string{},
+		true,
 		[]string{})
 	if err != nil {
 		t.Skipf("init sync err: %s", err)

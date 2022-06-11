@@ -40,3 +40,9 @@ func TestIsStartWitch(t *testing.T) {
 		t.Fatal("test IsStartWitch wrong.")
 	}
 }
+
+func TestTrimLeftSlash(t *testing.T) {
+	if TrimLeftSlash("/abc") != "abc" {
+		t.Fatal("TrimLeftSlash(\"/abc\") == \"abc\" is false")
+	}
+}

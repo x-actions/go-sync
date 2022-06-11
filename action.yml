@@ -30,6 +30,13 @@ inputs:
   ignore-expr:
     description: 'ignore expression string, comma-separated string, replace by empty string when calculate md5 summary'
     required: false
+  delete-objects:
+    description: 'auto delete Object which not in source dir'
+    default: 'true'
+    required: false
+  exclude-delete-objects:
+    description: 'exclude file or dir to delete in cdn provider, comma-separated string'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'

@@ -25,7 +25,7 @@ a tools sync code to cdn, like aliyun oss.
         endpoint: "<ENDPOINT>"
         bucket: "<BUCKETNAME>"
         cache: "<some-path/<BUCKETNAME>.json>"
-        exclude: "str1,str2"
+        exclude: "str1,str2"  # .git,.DS_Store
         source: "/github/workspace/public"
         ignore-expr: ""  # "<li>Build <small>&copy; .*</small></li>"
 ```

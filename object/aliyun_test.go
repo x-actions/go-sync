@@ -47,5 +47,12 @@ func TestListObjects(t *testing.T) {
 		metasMap)
 	if err != nil {
 		t.Skip(err.Error())
+		return
+	}
+
+	err = client.Delete("/images/ads/aliyun/aliyun.png")
+	if err != nil {
+		t.Skip(err.Error())
+		return
 	}
 }

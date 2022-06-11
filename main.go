@@ -18,6 +18,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/x-actions/go-sync/sync"
+	"github.com/x-actions/go-sync/utils"
 	"github.com/xiexianbin/golib/logger"
 	"os"
 	"strings"
@@ -28,17 +29,20 @@ const (
 )
 
 var (
-	provider       string
-	endpoint       string
-	bucket         string
-	accessKey      string
-	accessSecret   string
-	source         string
-	cacheFile      string
-	exclude        string
-	excludeList    []string
-	ignoreExpr     string
-	ignoreExprList []string
+	provider                 string
+	endpoint                 string
+	bucket                   string
+	accessKey                string
+	accessSecret             string
+	source                   string
+	cacheFile                string
+	exclude                  string
+	excludeList              []string
+	ignoreExpr               string
+	ignoreExprList           []string
+	deleteObjects            bool
+	excludeDeleteObjects     string
+	excludeDeleteObjectsList []string
 
 	debug   bool
 	help    bool
@@ -54,9 +58,13 @@ func init() {
 	flag.StringVar(&accessSecret, "access-secret", "", "CDN Access Key Secret")
 	flag.StringVar(&source, "source", "", "the source dir public to cdn")
 	flag.StringVar(&cacheFile, "cache", defaultCacheFile, "the cache file path")
-	flag.StringVar(&exclude, "exclude", "", "exclude file or dir in sourceDir, comma-separated string")
+	flag.StringVar(&exclude, "exclude", "",
+		"exclude file or dir in source dir, comma-separated string, e.g: .git,.DS_Store")
 	flag.StringVar(&ignoreExpr, "ignore-expr", "",
 		"ignore expression string, comma-separated string, replace by empty string when calculate md5 summary")
+	flag.BoolVar(&deleteObjects, "delete-objects", true, "auto delete Object which not in source dir")
+	flag.StringVar(&excludeDeleteObjects, "exclude-delete-objects", "",
+		"exclude file or dir to delete in cdn provider, comma-separated string")
 
 	flag.BoolVar(&debug, "d", false, "Enable the debug flag to show detail log")
 	flag.BoolVar(&help, "h", false, "print this help")
@@ -93,6 +101,9 @@ func parseParams() {
 
 	if exclude != "" {
 		excludeList = strings.Split(exclude, ",")
+		for i, str := range excludeList {
+			excludeList[i] = utils.TrimLeftSlash(str)
+		}
 	} else {
 		excludeList = []string{}
 	}
@@ -101,6 +112,15 @@ func parseParams() {
 		ignoreExprList = strings.Split(ignoreExpr, ",")
 	} else {
 		ignoreExprList = []string{}
+	}
+
+	if excludeDeleteObjects != "" {
+		excludeDeleteObjectsList = strings.Split(excludeDeleteObjects, ",")
+		for i, str := range excludeDeleteObjectsList {
+			excludeDeleteObjectsList[i] = utils.TrimLeftSlash(str)
+		}
+	} else {
+		excludeDeleteObjectsList = []string{}
 	}
 
 }
@@ -124,7 +144,8 @@ func main() {
 	parseParams()
 
 	var err error
-	s, err := sync.New(provider, endpoint, bucket, accessKey, accessSecret, source, cacheFile, excludeList, ignoreExprList)
+	s, err := sync.New(provider, endpoint, bucket, accessKey, accessSecret, source, cacheFile, excludeList,
+		ignoreExprList, deleteObjects, excludeDeleteObjectsList)
 	if err != nil {
 		logger.Errorf("init sync err: %s", err)
 		os.Exit(1)

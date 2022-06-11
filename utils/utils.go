@@ -36,3 +36,12 @@ func IsStartWitch(str string, excludeList []string) bool {
 	}
 	return false
 }
+
+// TrimLeftSlash return a string which not started with slash
+func TrimLeftSlash(str string) string {
+	if strings.HasPrefix(str, "/") {
+		return strings.TrimLeft(str, "/")
+	}
+
+	return str
+}

@@ -17,9 +17,8 @@
 package object
 
 import (
-	"strings"
-
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/x-actions/go-sync/utils"
 	"github.com/xiexianbin/golib/logger"
 )
 
@@ -74,13 +73,15 @@ func (c *AliyunOSSClient) List(metaKey string) (map[string]interface{}, error) {
 	return objectsMap, nil
 }
 
+// checkObjectName if name start with "/" aliyun oss api return InvalidObjectName error
+func checkObjectName(name string) string {
+	return utils.TrimLeftSlash(name)
+}
+
 // PutFromFile upload file to aliyun oss
 func (c *AliyunOSSClient) PutFromFile(objectKey, filePath string, metasMap map[string]interface{}) error {
 	logger.Debugf("Begin to put objectKey: %s, filePath: %s, metasMap: %s", objectKey, filePath, metasMap)
-	if strings.HasPrefix(objectKey, "/") {
-		objectKey = strings.TrimLeft(objectKey, "/")
-	}
-
+	objectKey = checkObjectName(objectKey)
 	err := c.Bucket.PutObjectFromFile(objectKey, filePath)
 	if err != nil {
 		return err
@@ -104,6 +105,8 @@ func (c *AliyunOSSClient) PutFromFile(objectKey, filePath string, metasMap map[s
 
 // Delete delete object from aliyun oss
 func (c *AliyunOSSClient) Delete(objectKey string) error {
+	logger.Debugf("Begin to delete objectKey: %s", objectKey)
+	objectKey = checkObjectName(objectKey)
 	err := c.Bucket.DeleteObject(objectKey)
 	if err != nil {
 		return err

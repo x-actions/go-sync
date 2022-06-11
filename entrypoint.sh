@@ -2,7 +2,6 @@
 set -e
 
 DEBUG="${INPUT_DEBUG}"
-
 if [[ X"$DEBUG" == X"true" ]]; then
   set -x
   DEBUG="true"
@@ -30,6 +29,14 @@ if test -z "${INPUT_BUCKET}"; then
   exit -1
 fi
 
+DELETE_OBJECTS="${INPUT_DELETE_OBJECTS}"
+if [[ X"$DELETE_OBJECTS" == X"true" ]]; then
+  set -x
+  DELETE_OBJECTS="true"
+else
+  DELETE_OBJECTS="false"
+fi
+
 echo "## Check User ##################"
 whoami
 
@@ -49,6 +56,8 @@ gsync \
   -source "${INPUT_SOURCE}" \
   -cache "${INPUT_CACHE}" \
   -exclude "${INPUT_EXCLUDE}" \
-  -ignore-expr "${INPUT_IGNORE_EXPR}"
+  -ignore-expr "${INPUT_IGNORE_EXPR}" \
+  -delete-objects="${DELETE_OBJECTS}" \
+  -exclude-delete-objects "${INPUT_EXCLUDE_DELETE_OBJECTS}"
 
 echo "## Done. ##################"

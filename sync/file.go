@@ -64,7 +64,8 @@ func ReadDir(filesMap map[string]interface{}, sourceDir, subDir string, ignoreEx
 
 			md5sum := utils.Md5sum(fileContent)
 
-			filesMap[strings.Replace(filePath, sourceDir, "", 1)] = md5sum
+			k := utils.TrimLeftSlash(strings.Replace(filePath, sourceDir, "", 1))
+			filesMap[k] = md5sum
 		}
 	}
 }

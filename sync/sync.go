@@ -30,15 +30,17 @@ import (
 )
 
 type Sync struct {
-	Provider        string
-	Endpoint        string
-	BucketName      string
-	accessKeyID     string
-	accessKeySecret string
-	SourceDir       string
-	CacheFile       string
-	ExcludeList     []string
-	IgnoreExprList  []string
+	Provider                 string
+	Endpoint                 string
+	BucketName               string
+	accessKeyID              string
+	accessKeySecret          string
+	SourceDir                string
+	CacheFile                string
+	ExcludeList              []string
+	IgnoreExprList           []string
+	DeleteObjects            bool
+	ExcludeDeleteObjectsList []string
 
 	// api which implement object.IObjectClient
 	ObjectAPI object.IObjectClient
@@ -62,7 +64,7 @@ func (s *Sync) uploadFiles(m map[string]interface{}, metaKey, sourceDir, action 
 	wg := sync.WaitGroup{}
 	wg.Add(concurrentmap.ShareCount)
 
-	logger.Debugf("Do upload %s files", action)
+	logger.Debugf("Do upload %s files:", action)
 	for i := 0; i < concurrentmap.ShareCount; i++ {
 		// pre shared map, new goroutine to statics
 		go func(ms *concurrentmap.Shared, index int) {
@@ -95,11 +97,23 @@ func (s *Sync) uploadFiles(m map[string]interface{}, metaKey, sourceDir, action 
 
 // syncDelFiles Do delete files from aliyun oss
 func (s *Sync) deleteFiles(m map[string]interface{}, ch chan bool) {
+	if s.DeleteObjects == false {
+		ch <- true
+		logger.Infof("Skip delete %d files by delete-objects==false", len(m))
+		return
+	}
+
 	// new ConcurrentMap
 	cMap := concurrentmap.New()
 
 	// set key and value to cMap
 	for k, v := range m {
+		// skip delete special objects
+		if utils.IsStartWitch(k, s.ExcludeDeleteObjectsList) {
+			logger.Debugf("skip %s by exclude-delete-objects rule", k)
+			continue
+		}
+
 		cMap.Set(k, v)
 	}
 
@@ -138,8 +152,9 @@ func (s *Sync) deleteFiles(m map[string]interface{}, ch chan bool) {
 
 // Do do sync logic
 func (s *Sync) Do(metaKey string) error {
-	logger.Infof("Begin to sync source files from: %s to %s:%s, metaKey is %s, cacheFile is %s, exclude file or direct is %s",
-		s.SourceDir, s.Provider, s.BucketName, metaKey, s.CacheFile, s.ExcludeList)
+	logger.Infof("Begin to sync source files from: %s to %s:%s, metaKey is %s, cacheFile is %s, "+
+		"exclude file or direct is %s, delete-object is %v, exclude-delete-objects is %s",
+		s.SourceDir, s.Provider, s.BucketName, metaKey, s.CacheFile, s.ExcludeList, s.DeleteObjects, s.ExcludeDeleteObjectsList)
 
 	// read local files
 	_filesMap := make(map[string]interface{})
@@ -148,7 +163,7 @@ func (s *Sync) Do(metaKey string) error {
 	filesMap := make(map[string]interface{})
 	for k := range _filesMap {
 		if utils.IsStartWitch(k, s.ExcludeList) {
-			logger.Debugf("Skip %s by exclude rule", k)
+			logger.Debugf("skip %s by exclude rule", k)
 			continue
 		}
 		filesMap[k] = _filesMap[k]
@@ -209,7 +224,8 @@ func (s *Sync) Do(metaKey string) error {
 }
 
 // New return new sync client
-func New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir, cacheFile string, excludeList, ignoreExprList []string) (*Sync, error) {
+func New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir, cacheFile string,
+	excludeList, ignoreExprList []string, deleteObjects bool, excludeDeleteObjectsList []string) (*Sync, error) {
 	var client object.IObjectClient
 	var err error
 
@@ -224,15 +240,17 @@ func New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir
 	}
 
 	return &Sync{
-		Provider:        provider,
-		Endpoint:        endpoint,
-		BucketName:      bucketName,
-		accessKeyID:     accessKeyID,
-		accessKeySecret: accessKeySecret,
-		SourceDir:       sourceDir,
-		CacheFile:       cacheFile,
-		ExcludeList:     excludeList,
-		IgnoreExprList:  ignoreExprList,
+		Provider:                 provider,
+		Endpoint:                 endpoint,
+		BucketName:               bucketName,
+		accessKeyID:              accessKeyID,
+		accessKeySecret:          accessKeySecret,
+		SourceDir:                sourceDir,
+		CacheFile:                cacheFile,
+		ExcludeList:              excludeList,
+		IgnoreExprList:           ignoreExprList,
+		DeleteObjects:            deleteObjects,
+		ExcludeDeleteObjectsList: excludeDeleteObjectsList,
 
 		ObjectAPI: client,
 	}, nil
