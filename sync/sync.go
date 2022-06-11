@@ -22,6 +22,7 @@ import (
 	"github.com/x-actions/go-sync/utils"
 	"os"
 	"path"
+	"strings"
 	"sync"
 
 	"github.com/xiexianbin/golib/concurrentmap"
@@ -152,6 +153,37 @@ func (s *Sync) deleteFiles(m map[string]interface{}, ch chan bool) {
 	logger.Infof("delete %d files Done", len(m)-skipCount)
 }
 
+// filterByExclude filter which file to sync
+func (s *Sync) filterByExclude(rawFilesMap map[string]interface{}) map[string]interface{} {
+	skipSyncCount := 0
+	skipSyncMap := map[string]int{}
+	filesMap := make(map[string]interface{})
+	for k := range rawFilesMap {
+		for _, e := range s.ExcludeList {
+			if e != "" && strings.HasPrefix(k, e) {
+				if v, ok := skipSyncMap[e]; ok {
+					v++
+					skipSyncMap[e] = v
+				} else {
+					skipSyncMap[e] = 1
+				}
+				skipSyncCount++
+				continue
+			}
+		}
+
+		filesMap[k] = rawFilesMap[k]
+	}
+	if skipSyncCount > 0 {
+		logger.Debugf("skip sync %d files by exclude rule: %s, exclude detail:", skipSyncCount, s.ExcludeList)
+		for k, v := range skipSyncMap {
+			logger.Debugf("  %s: %d", k, v)
+		}
+	}
+
+	return filesMap
+}
+
 // Do do sync logic
 func (s *Sync) Do(metaKey string) error {
 	logger.Infof("Begin to sync source files from: %s to %s:%s, metaKey is %s, cacheFile is %s, "+
@@ -159,17 +191,9 @@ func (s *Sync) Do(metaKey string) error {
 		s.SourceDir, s.Provider, s.BucketName, metaKey, s.CacheFile, s.ExcludeList, s.DeleteObjects, s.ExcludeDeleteObjectsList)
 
 	// read local files
-	_filesMap := make(map[string]interface{})
-	ReadDir(_filesMap, s.SourceDir, "", s.IgnoreExprList)
-
-	filesMap := make(map[string]interface{})
-	for k := range _filesMap {
-		if utils.IsStartWitch(k, s.ExcludeList) {
-			logger.Debugf("skip sync %s by exclude rule", k)
-			continue
-		}
-		filesMap[k] = _filesMap[k]
-	}
+	rawFilesMap := make(map[string]interface{})
+	ReadDir(rawFilesMap, s.SourceDir, "", s.IgnoreExprList)
+	filesMap := s.filterByExclude(rawFilesMap)
 
 	// list oss object metadata
 	objectsMap := make(map[string]interface{})
