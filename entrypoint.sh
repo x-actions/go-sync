@@ -10,32 +10,23 @@ else
   DEBUG="false"
 fi
 
-CDNTYPE=${CDNTYPE:-"aliyun"}
-ACCESSKEYID=${ACCESSKEYID:-""}
-ACCESSKEYSECRET=${ACCESSKEYSECRET:-""}
-ENDPOINT=${ENDPOINT:-""}
-BUCKETNAME=${BUCKETNAME:-""}
-CACHEFILE=${CACHEFILE:-""}
-EXCLUDE=${EXCLUDE:-""}
-SUB_DIR=${SUB_DIR:-"public"}
-
-if test -z "${ACCESSKEYID}"; then
-  echo "ACCESSKEYID is nil, skip!"
+if test -z "${INPUT_ACCESS_KEY}"; then
+  echo "ACCESS_KEY is nil, skip!"
   exit -1
 fi
 
-if test -z "${ACCESSKEYSECRET}"; then
-  echo "ACCESSKEYSECRET is nil, skip!"
+if test -z "${INPUT_ACCESS_SECRET}"; then
+  echo "ACCESS_SECRET is nil, skip!"
   exit -1
 fi
 
-if test -z "${ENDPOINT}"; then
+if test -z "${INPUT_ENDPOINT}"; then
   echo "ENDPOINT is nil, skip!"
   exit -1
 fi
 
-if test -z "${BUCKETNAME}"; then
-  echo "BUCKETNAME is nil, skip!"
+if test -z "${INPUT_BUCKET}"; then
+  echo "BUCKET is nil, skip!"
   exit -1
 fi
 
@@ -49,13 +40,14 @@ gsync -v
 echo "## sync to cdn ##################"
 
 gsync \
-  -cdnType "${CDNTYPE}" \
-  -accessKeyID "${ACCESSKEYID}" \
-  -accessKeySecret "${ACCESSKEYSECRET}" \
-  -endpoint "${ENDPOINT}" \
-  -bucketName "${BUCKETNAME}" \
-  -cacheFile "${CACHEFILE}" \
-  -exclude "${EXCLUDE}" \
-  -sourceDir "/github/workspace/${SUB_DIR}"
+  -d "${DEBUG}" \
+  -provider "${INPUT_PROVIDER}" \
+  -access-key "${INPUT_ACCESS_KEY}" \
+  -access-secret "${INPUT_ACCESS_SECRET}" \
+  -endpoint "${INPUT_ENDPOINT}" \
+  -bucket "${INPUT_BUCKET}" \
+  -source "${INPUT_SOURCE}" \
+  -cache "${INPUT_CACHE}" \
+  -exclude "${INPUT_EXCLUDE}"
 
 echo "## Done. ##################"

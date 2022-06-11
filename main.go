@@ -71,6 +71,11 @@ func parseParams() {
 	if exclude != "" {
 		excludeList = strings.Split(exclude, ",")
 	}
+
+	if sourceDir == "" {
+		logger.Print("source dir is empty.")
+		os.Exit(1)
+	}
 }
 
 func main() {

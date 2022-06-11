@@ -2,29 +2,29 @@ name: 'go-sync'
 description: 'Github Action for Sync Code to CDN'
 author: 'xiexianbin <me@xiexianbin>'
 inputs:
-  CDNTYPE:
+  provider:
     description: 'cdn type'
     default: 'aliyun'
     required: true
-  ACCESSKEYID:
+  access-key:
     description: 'CDN Access Key ID'
     required: true
-  ACCESSKEYSECRET:
+  access-secret:
     description: 'CDN Access Key Secret'
     required: true
-  ENDPOINT:
-    description: 'CDN Bucket Endpoint'
-    required: true
-  BUCKETNAME:
+  bucket:
     description: 'CDN Bucket Name'
     required: true
-  CACHEFILE:
-    description: 'the cache file path'
+  endpoint:
+    description: 'CDN Bucket Endpoint (default "oss-cn-shanghai.aliyuncs.com")'
+    required: true
+  cache:
+    description: 'the cache file path (default "/tmp/<bucketName>.json")'
     required: false
-  EXCLUDE:
+  exclude:
     description: 'exclude file or dir, comma-separated string'
     required: false
-  SUB_DIR:
+  source:
     description: 'the source dir public to cdn'
     required: true
 runs:

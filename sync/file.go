@@ -18,6 +18,7 @@ package sync
 
 import (
 	"io/ioutil"
+	"path"
 	"regexp"
 	"strings"
 
@@ -28,16 +29,9 @@ import (
 
 // ReadDir traverse dir
 func ReadDir(filesMap map[string]interface{}, sourceDir, subDir string) {
-	if strings.HasSuffix(sourceDir, "/") == false {
-		sourceDir += "/"
-	}
-
 	currentDir := sourceDir
 	if subDir != "" {
-		if strings.HasSuffix(subDir, "/") == false {
-			subDir += "/"
-		}
-		currentDir += subDir
+		currentDir = path.Join(currentDir, subDir)
 	}
 
 	dirInfos, err := ioutil.ReadDir(currentDir)
