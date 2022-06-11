@@ -22,13 +22,13 @@ ENV VERSION "v1.2.0"
 
 RUN apk update && \
     apk add --no-cache git git-lfs bash wget curl openssh-client tree && \
-    rm -rf /var/cache/apk/* \
+    rm -rf /var/cache/apk/* && \
     cd /tmp && \
+#    wget https://github.com/x-actions/go-sync/releases/download/${VERSION}/gsync-linux && \
     curl -s https://api.github.com/repos/x-actions/go-sync/releases/latest | \
     sed -r -n '/browser_download_url/{/gsync-linux/{s@[^:]*:[[:space:]]*"([^"]*)".*@\1@g;p;q}}' | xargs wget && \
     chmod +x /tmp/gsync-linux && \
     mv /tmp/gsync-linux /usr/local/bin/gsync
-#    wget https://github.com/x-actions/go-sync/releases/download/${VERSION}/gsync-linux && \
 
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
