@@ -1,8 +1,8 @@
 # Github Action for Sync Code to CDN
 
-[![build-test](https://github.com/xiexianbin/go-actions-demo/actions/workflows/workflow.yaml/badge.svg)](https://github.com/xiexianbin/go-actions-demo/actions/workflows/workflow.yaml)
-[![GoDoc](https://godoc.org/github.com/xiexianbin/go-actions-demo?status.svg)](https://pkg.go.dev/github.com/xiexianbin/go-actions-demo)
-[![Go Report Card](https://goreportcard.com/badge/github.com/xiexianbin/go-actions-demo)](https://goreportcard.com/report/github.com/xiexianbin/go-actions-demo)
+[![build-test](https://github.com/x-actions/go-sync/actions/workflows/workflow.yaml/badge.svg)](https://github.com/x-actions/go-sync/actions/workflows/workflow.yaml)
+[![GoDoc](https://godoc.org/github.com/x-actions/go-sync?status.svg)](https://pkg.go.dev/github.com/x-actions/go-sync)
+[![Go Report Card](https://goreportcard.com/badge/github.com/x-actions/go-sync)](https://goreportcard.com/report/github.com/x-actions/go-sync)
 
 a tools sync code to cdn, like aliyun oss.
 
@@ -53,7 +53,7 @@ a tools sync code to cdn, like aliyun oss.
 - download
 
 ```
-curl -Lfs -o main https://github.com/xiexianbin/go-actions-demo/releases/latest/download/gsync-{linux|darwin|windows}
+curl -Lfs -o main https://github.com/x-actions/go-sync/releases/latest/download/gsync-{linux|darwin|windows}
 chmod +x gsync
 ./gsync -h
 ```
