@@ -2,31 +2,45 @@ name: 'go-sync'
 description: 'Github Action for Sync Code to CDN'
 author: 'xiexianbin <me@xiexianbin>'
 inputs:
-  CDNTYPE:
+  debug:
+    description: 'Enable the debug flag to show detail log'
+    default: 'false'
+    required: false
+  provider:
     description: 'cdn type'
     default: 'aliyun'
     required: true
-  ACCESSKEYID:
+  access_key:
     description: 'CDN Access Key ID'
     required: true
-  ACCESSKEYSECRET:
+  access_secret:
     description: 'CDN Access Key Secret'
     required: true
-  ENDPOINT:
-    description: 'CDN Bucket Endpoint'
-    required: true
-  BUCKETNAME:
+  bucket:
     description: 'CDN Bucket Name'
     required: true
-  CACHEFILE:
-    description: 'the cache file path'
-    required: false
-  EXCLUDE:
-    description: 'exclude file or dir, comma-separated string'
-    required: false
-  SUB_DIR:
+  endpoint:
+    description: 'CDN Bucket Endpoint (default "oss-cn-shanghai.aliyuncs.com")'
+    required: true
+  source:
     description: 'the source dir public to cdn'
     required: true
+  cache:
+    description: 'the cache file path (default "/tmp/<bucketName>.json")'
+    required: false
+  exclude:
+    description: 'exclude file or dir, comma-separated string'
+    required: false
+  ignore_expr:
+    description: 'ignore expression string, comma-separated string, replace by empty string when calculate md5 summary'
+    required: false
+  delete_objects:
+    description: 'auto delete Object which not in source dir'
+    default: 'true'
+    required: false
+  exclude_delete_objects:
+    description: 'exclude file or dir to delete in cdn provider, comma-separated string'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'

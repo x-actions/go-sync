@@ -1,45 +1,63 @@
 #!/bin/bash
 set -e
 
-CDNTYPE=${CDNTYPE:-"aliyun"}
-ACCESSKEYID=${ACCESSKEYID:-""}
-ACCESSKEYSECRET=${ACCESSKEYSECRET:-""}
-ENDPOINT=${ENDPOINT:-""}
-BUCKETNAME=${BUCKETNAME:-""}
-CACHEFILE=${CACHEFILE:-""}
-EXCLUDE=${EXCLUDE:-""}
-SUB_DIR=${SUB_DIR:-"public"}
+DEBUG="${INPUT_DEBUG}"
+if [[ X"$DEBUG" == X"true" ]]; then
+  set -x
+  DEBUG="true"
+else
+  DEBUG="false"
+fi
 
-if test -z "${ACCESSKEYID}"; then
-  echo "ACCESSKEYID is nil, skip!"
+if test -z "${INPUT_ACCESS_KEY}"; then
+  echo "ACCESS_KEY is nil, skip!"
   exit -1
 fi
 
-if test -z "${ACCESSKEYSECRET}"; then
-  echo "ACCESSKEYSECRET is nil, skip!"
+if test -z "${INPUT_ACCESS_SECRET}"; then
+  echo "ACCESS_SECRET is nil, skip!"
   exit -1
 fi
 
-if test -z "${ENDPOINT}"; then
+if test -z "${INPUT_ENDPOINT}"; then
   echo "ENDPOINT is nil, skip!"
   exit -1
 fi
 
-if test -z "${BUCKETNAME}"; then
-  echo "BUCKETNAME is nil, skip!"
+if test -z "${INPUT_BUCKET}"; then
+  echo "BUCKET is nil, skip!"
   exit -1
 fi
+
+DELETE_OBJECTS="${INPUT_DELETE_OBJECTS}"
+if [[ X"$DELETE_OBJECTS" == X"false" ]]; then
+  set -x
+  DELETE_OBJECTS="false"
+else
+  DELETE_OBJECTS="true"
+fi
+
+echo "## Check User ##################"
+whoami
+
+echo "## Check Package Version ##################"
+bash --version
+gsync -v
 
 echo "## sync to cdn ##################"
 
 gsync \
-  -cdnType "${CDNTYPE}" \
-  -accessKeyID "${ACCESSKEYID}" \
-  -accessKeySecret "${ACCESSKEYSECRET}" \
-  -endpoint "${ENDPOINT}" \
-  -bucketName "${BUCKETNAME}" \
-  -cacheFile "${CACHEFILE}" \
-  -exclude "${EXCLUDE}" \
-  -sourceDir "/github/workspace/${SUB_DIR}"
+  -d="${DEBUG}" \
+  -provider "${INPUT_PROVIDER}" \
+  -access-key "${INPUT_ACCESS_KEY}" \
+  -access-secret "${INPUT_ACCESS_SECRET}" \
+  -endpoint "${INPUT_ENDPOINT}" \
+  -bucket "${INPUT_BUCKET}" \
+  -source "${INPUT_SOURCE}" \
+  -cache "${INPUT_CACHE}" \
+  -exclude "${INPUT_EXCLUDE}" \
+  -ignore-expr "${INPUT_IGNORE_EXPR}" \
+  -delete-objects="${DELETE_OBJECTS}" \
+  -exclude-delete-objects "${INPUT_EXCLUDE_DELETE_OBJECTS}"
 
 echo "## Done. ##################"

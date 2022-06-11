@@ -1,0 +1,6 @@
+bin
+object
+sync
+utils
+vendor
+*.go
