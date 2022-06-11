@@ -1,5 +1,6 @@
 bin
-aliyun
+object
+sync
 utils
 vendor
 *.go

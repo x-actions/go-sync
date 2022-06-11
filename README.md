@@ -20,7 +20,7 @@ a tools sync code to cdn, like aliyun oss.
 ```
     - name: Sync Code to CDN
       uses: x-actions/go-sync@main
-      input:
+      with:
         provider: "aliyun"
         access-key: ${{ secrets.ACCESSKEYID }}
         access-secret: ${{ secrets.ACCESSKEYSECRET }}
@@ -34,7 +34,7 @@ a tools sync code to cdn, like aliyun oss.
 ```
     - name: Sync Code to CDN
       uses: x-actions/go-sync@main
-      input:
+      with:
         provider: "aliyun"
         access-key: ${{ secrets.ACCESSKEYID }}
         access-secret: ${{ secrets.ACCESSKEYSECRET }}
