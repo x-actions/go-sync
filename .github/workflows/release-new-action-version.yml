@@ -42,6 +42,6 @@ jobs:
           files: |
             Release.txt
             LICENSE
-            bin/git-mirrors-linux
-            bin/git-mirrors-darwin
-            bin/git-mirrors-windows
+            bin/gsync-linux
+            bin/gsync-darwin
+            bin/gsync-windows
