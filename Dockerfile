@@ -18,15 +18,13 @@ ENV LC_ALL C.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 # change VERSION when make a release, v1.0.0
-ENV VERSION "v1.2.0"
+ENV VERSION "v1.2.1"
 
 RUN apk update && \
     apk add --no-cache git git-lfs bash wget curl openssh-client tree && \
     rm -rf /var/cache/apk/* && \
     cd /tmp && \
-#    wget https://github.com/x-actions/go-sync/releases/download/${VERSION}/gsync-linux && \
-    curl -s https://api.github.com/repos/x-actions/go-sync/releases/latest | \
-    sed -r -n '/browser_download_url/{/gsync-linux/{s@[^:]*:[[:space:]]*"([^"]*)".*@\1@g;p;q}}' | xargs wget && \
+    wget https://github.com/x-actions/go-sync/releases/download/${VERSION}/gsync-linux && \
     chmod +x /tmp/gsync-linux && \
     mv /tmp/gsync-linux /usr/local/bin/gsync
 
