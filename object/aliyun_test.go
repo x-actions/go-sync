@@ -39,4 +39,13 @@ func TestListObjects(t *testing.T) {
 	}
 
 	t.Log(len(objects))
+
+	metasMap := make(map[string]interface{})
+	err = client.PutFromFile(
+		"/images/ads/aliyun/aliyun.png",
+		"/Users/xiexianbin/workspace/code/github.com/xiexianbin/note/public/images/ads/aliyun/aliyun.png",
+		metasMap)
+	if err != nil {
+		t.Skip(err.Error())
+	}
 }

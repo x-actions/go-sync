@@ -17,6 +17,8 @@
 package object
 
 import (
+	"strings"
+
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/xiexianbin/golib/logger"
 )
@@ -75,6 +77,10 @@ func (c *AliyunOSSClient) List(metaKey string) (map[string]interface{}, error) {
 // PutFromFile upload file to aliyun oss
 func (c *AliyunOSSClient) PutFromFile(objectKey, filePath string, metasMap map[string]interface{}) error {
 	logger.Debugf("Begin to put objectKey: %s, filePath: %s, metasMap: %s", objectKey, filePath, metasMap)
+	if strings.HasPrefix(objectKey, "/") {
+		objectKey = strings.TrimLeft(objectKey, "/")
+	}
+
 	err := c.Bucket.PutObjectFromFile(objectKey, filePath)
 	if err != nil {
 		return err
