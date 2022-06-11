@@ -18,15 +18,18 @@ inputs:
   endpoint:
     description: 'CDN Bucket Endpoint (default "oss-cn-shanghai.aliyuncs.com")'
     required: true
+  source:
+    description: 'the source dir public to cdn'
+    required: true
   cache:
     description: 'the cache file path (default "/tmp/<bucketName>.json")'
     required: false
   exclude:
     description: 'exclude file or dir, comma-separated string'
     required: false
-  source:
-    description: 'the source dir public to cdn'
-    required: true
+  ignore-expr:
+    description: 'ignore expression string, comma-separated string, replace by empty string when calculate md5 summary'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'

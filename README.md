@@ -18,15 +18,16 @@ a tools sync code to cdn, like aliyun oss.
 ```
     - name: Sync Code to CDN
       uses: x-actions/go-sync@main
-      env:
-        CDNTYPE: "aliyun"
-        ACCESSKEYID: ${{ secrets.ACCESSKEYID }}
-        ACCESSKEYSECRET: ${{ secrets.ACCESSKEYSECRET }}
-        ENDPOINT: "<ENDPOINT>"
-        BUCKETNAME: "<BUCKETNAME>"
-        CACHEFILE: "<some-path/<BUCKETNAME>.json>"
-        EXCLUDE: "str1,str2"
-        SUB_DIR: "public"
+      input:
+        provider: "aliyun"
+        access-key: ${{ secrets.ACCESSKEYID }}
+        access-secret: ${{ secrets.ACCESSKEYSECRET }}
+        endpoint: "<ENDPOINT>"
+        bucket: "<BUCKETNAME>"
+        cache: "<some-path/<BUCKETNAME>.json>"
+        exclude: "str1,str2"
+        source: "/github/workspace/public"
+        ignore-expr: ""  # "<li>Build <small>&copy; .*</small></li>"
 ```
 
 ### Usage as command line
@@ -56,7 +57,7 @@ make all
   -bucket "dev-blog-xiexianbin-cn" \
   -endpoint "oss-cn-hangzhou.aliyuncs.com" \
   -source "/Users/xiexianbin/workspace/code/github.com/xiexianbin/note/public" \
-  -exclude ".git"
+  -exclude ".git,.DS_Store"
 ```
 
 ## Others

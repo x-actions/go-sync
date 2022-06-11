@@ -23,16 +23,22 @@ import (
 	"strings"
 )
 
+const (
+	defaultCacheFile = "/tmp/<bucketName>.json"
+)
+
 var (
-	provider     string
-	endpoint     string
-	bucket       string
-	accessKey    string
-	accessSecret string
-	source       string
-	cacheFile    string
-	exclude      string
-	excludeList  []string
+	provider       string
+	endpoint       string
+	bucket         string
+	accessKey      string
+	accessSecret   string
+	source         string
+	cacheFile      string
+	exclude        string
+	excludeList    []string
+	ignoreExpr     string
+	ignoreExprList []string
 
 	debug   bool
 	help    bool
@@ -47,8 +53,10 @@ func init() {
 	flag.StringVar(&accessKey, "access-key", "", "CDN Access Key ID")
 	flag.StringVar(&accessSecret, "access-secret", "", "CDN Access Key Secret")
 	flag.StringVar(&source, "source", "", "the source dir public to cdn")
-	flag.StringVar(&cacheFile, "cache", "/tmp/<bucketName>.json", "the cache file path")
+	flag.StringVar(&cacheFile, "cache", defaultCacheFile, "the cache file path")
 	flag.StringVar(&exclude, "exclude", "", "exclude file or dir in sourceDir, comma-separated string")
+	flag.StringVar(&ignoreExpr, "ignore-expr", "",
+		"ignore expression string, comma-separated string, replace by empty string when calculate md5 summary")
 
 	flag.BoolVar(&debug, "d", false, "Enable the debug flag to show detail log")
 	flag.BoolVar(&help, "h", false, "print this help")
@@ -64,14 +72,6 @@ func init() {
 }
 
 func parseParams() {
-	if cacheFile == "" {
-		cacheFile = fmt.Sprintf("/tmp/%s.json", bucket)
-	}
-
-	if exclude != "" {
-		excludeList = strings.Split(exclude, ",")
-	}
-
 	if accessKey == "" || accessSecret == "" {
 		logger.Print("access-key or access-secret is empty.")
 		os.Exit(1)
@@ -86,6 +86,23 @@ func parseParams() {
 		logger.Print("source dir is empty.")
 		os.Exit(1)
 	}
+
+	if cacheFile == defaultCacheFile {
+		cacheFile = fmt.Sprintf("/tmp/%s.json", bucket)
+	}
+
+	if exclude != "" {
+		excludeList = strings.Split(exclude, ",")
+	} else {
+		excludeList = []string{}
+	}
+
+	if ignoreExpr != "" {
+		ignoreExprList = strings.Split(ignoreExpr, ",")
+	} else {
+		ignoreExprList = []string{}
+	}
+
 }
 
 func main() {
@@ -107,7 +124,7 @@ func main() {
 	parseParams()
 
 	var err error
-	s, err := sync.New(provider, endpoint, bucket, accessKey, accessSecret, source, cacheFile, excludeList)
+	s, err := sync.New(provider, endpoint, bucket, accessKey, accessSecret, source, cacheFile, excludeList, ignoreExprList)
 	if err != nil {
 		logger.Errorf("init sync err: %s", err)
 		os.Exit(1)

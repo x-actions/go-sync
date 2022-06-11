@@ -48,6 +48,7 @@ gsync \
   -bucket "${INPUT_BUCKET}" \
   -source "${INPUT_SOURCE}" \
   -cache "${INPUT_CACHE}" \
-  -exclude "${INPUT_EXCLUDE}"
+  -exclude "${INPUT_EXCLUDE}" \
+  -ignore-expr "${INPUT_IGNORE_EXPR}"
 
 echo "## Done. ##################"

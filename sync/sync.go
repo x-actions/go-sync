@@ -21,6 +21,7 @@ import (
 	"github.com/x-actions/go-sync/object"
 	"github.com/x-actions/go-sync/utils"
 	"os"
+	"path"
 	"sync"
 
 	"github.com/xiexianbin/golib/concurrentmap"
@@ -37,6 +38,7 @@ type Sync struct {
 	SourceDir       string
 	CacheFile       string
 	ExcludeList     []string
+	IgnoreExprList  []string
 
 	// api which implement object.IObjectClient
 	ObjectAPI object.IObjectClient
@@ -72,7 +74,7 @@ func (s *Sync) uploadFiles(m map[string]interface{}, metaKey, sourceDir, action 
 				metasMap := make(map[string]interface{})
 				v, _ := cMap.Get(k)
 				metasMap[metaKey] = v
-				err := s.ObjectAPI.PutFromFile(k, sourceDir+"/"+k, metasMap)
+				err := s.ObjectAPI.PutFromFile(k, path.Join(sourceDir, k), metasMap)
 				if err != nil {
 					logger.Warnf("Upload %s OSS Object %s %s err: %s", action, process, k, err.Error())
 				} else {
@@ -141,7 +143,7 @@ func (s *Sync) Do(metaKey string) error {
 
 	// read local files
 	_filesMap := make(map[string]interface{})
-	ReadDir(_filesMap, s.SourceDir, "")
+	ReadDir(_filesMap, s.SourceDir, "", s.IgnoreExprList)
 
 	filesMap := make(map[string]interface{})
 	for k := range _filesMap {
@@ -207,7 +209,7 @@ func (s *Sync) Do(metaKey string) error {
 }
 
 // New return new sync client
-func New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir, cacheFile string, excludeList []string) (*Sync, error) {
+func New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir, cacheFile string, excludeList, ignoreExprList []string) (*Sync, error) {
 	var client object.IObjectClient
 	var err error
 
@@ -230,6 +232,7 @@ func New(provider, endpoint, bucketName, accessKeyID, accessKeySecret, sourceDir
 		SourceDir:       sourceDir,
 		CacheFile:       cacheFile,
 		ExcludeList:     excludeList,
+		IgnoreExprList:  ignoreExprList,
 
 		ObjectAPI: client,
 	}, nil

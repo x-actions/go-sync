@@ -28,7 +28,8 @@ import (
 )
 
 // ReadDir traverse dir
-func ReadDir(filesMap map[string]interface{}, sourceDir, subDir string) {
+// ignoreExprList which replace by empty string when calculate md5 summary
+func ReadDir(filesMap map[string]interface{}, sourceDir, subDir string, ignoreExprList []string) {
 	currentDir := sourceDir
 	if subDir != "" {
 		currentDir = path.Join(currentDir, subDir)
@@ -41,22 +42,26 @@ func ReadDir(filesMap map[string]interface{}, sourceDir, subDir string) {
 
 	for _, dirInfo := range dirInfos {
 		if dirInfo.IsDir() {
-			newSubDir := subDir + dirInfo.Name()
-			ReadDir(filesMap, sourceDir, newSubDir)
+			newSubDir := path.Join(subDir, dirInfo.Name())
+			ReadDir(filesMap, sourceDir, newSubDir, ignoreExprList)
 		} else {
-			filePath := currentDir + dirInfo.Name()
+			filePath := path.Join(currentDir, dirInfo.Name())
 			fileByte, err := ioutil.ReadFile(filePath)
 			if err != nil {
 				logger.Warnf("read file err: %s", err.Error())
 			}
 
 			fileContent := string(fileByte)
-			re, err := regexp.Compile("<li>Build <small>&copy; .*</small></li>")
-			if err != nil {
-				logger.Warnf("init regexp err: %s", err.Error())
+
+			// replace expr string with empty string before calculate md5 summary
+			for _, expr := range ignoreExprList {
+				re, err := regexp.Compile(expr)
+				if err != nil {
+					logger.Warnf("init regexp err: %s", err.Error())
+				}
+				fileContent = re.ReplaceAllString(fileContent, "")
 			}
 
-			fileContent = re.ReplaceAllString(fileContent, "")
 			md5sum := utils.Md5sum(fileContent)
 
 			filesMap[strings.Replace(filePath, sourceDir, "", 1)] = md5sum

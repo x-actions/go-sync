@@ -25,6 +25,7 @@ import (
 type AliyunOSSClient struct {
 	BucketName string
 	Client     *oss.Client
+	Bucket     *oss.Bucket
 }
 
 // NewAliyunOSSClient return Aliyun oss client
@@ -34,25 +35,26 @@ func NewAliyunOSSClient(bucketName, accessKeyID, accessKeySecret, endpoint strin
 		return nil, err
 	}
 
-	return &AliyunOSSClient{BucketName: bucketName, Client: client}, nil
-}
-
-func (c *AliyunOSSClient) List(metaKey string) (map[string]interface{}, error) {
-	objectsMap := make(map[string]interface{})
-
-	bucket, err := c.Client.Bucket(c.BucketName)
+	bucket, err := client.Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
 
+	return &AliyunOSSClient{BucketName: bucketName, Client: client, Bucket: bucket}, nil
+}
+
+// List list all aliyun oss object
+func (c *AliyunOSSClient) List(metaKey string) (map[string]interface{}, error) {
+	objectsMap := make(map[string]interface{})
+
 	marker := ""
 	for {
-		lsRes, err := bucket.ListObjects(oss.Marker(marker))
+		lsRes, err := c.Bucket.ListObjects(oss.Marker(marker))
 		if err != nil {
 			logger.Warnf("list oss objects err: %s", err.Error())
 		}
 		for _, object := range lsRes.Objects {
-			headers, err := bucket.GetObjectDetailedMeta(object.Key)
+			headers, err := c.Bucket.GetObjectDetailedMeta(object.Key)
 			if err != nil {
 				logger.Warnf("get oss object %s detail metadata err: %s", object.Key, err.Error())
 			}
@@ -70,14 +72,10 @@ func (c *AliyunOSSClient) List(metaKey string) (map[string]interface{}, error) {
 	return objectsMap, nil
 }
 
+// PutFromFile upload file to aliyun oss
 func (c *AliyunOSSClient) PutFromFile(objectKey, filePath string, metasMap map[string]interface{}) error {
-	bucket, err := c.Client.Bucket(c.BucketName)
-	if err != nil {
-		return err
-	}
-
 	logger.Debugf("Begin to put objectKey: %s, filePath: %s, metasMap: %s", objectKey, filePath, metasMap)
-	err = bucket.PutObjectFromFile(objectKey, filePath)
+	err := c.Bucket.PutObjectFromFile(objectKey, filePath)
 	if err != nil {
 		return err
 	}
@@ -85,7 +83,7 @@ func (c *AliyunOSSClient) PutFromFile(objectKey, filePath string, metasMap map[s
 	for k, v := range metasMap {
 		switch v.(type) {
 		case string:
-			err = bucket.SetObjectMeta(objectKey, oss.Meta(k, v.(string)))
+			err = c.Bucket.SetObjectMeta(objectKey, oss.Meta(k, v.(string)))
 			if err != nil {
 				return err
 			}
@@ -98,14 +96,9 @@ func (c *AliyunOSSClient) PutFromFile(objectKey, filePath string, metasMap map[s
 	return nil
 }
 
+// Delete delete object from aliyun oss
 func (c *AliyunOSSClient) Delete(objectKey string) error {
-	var err error
-	bucket, err := c.Client.Bucket(c.BucketName)
-	if err != nil {
-		return err
-	}
-
-	err = bucket.DeleteObject(objectKey)
+	err := c.Bucket.DeleteObject(objectKey)
 	if err != nil {
 		return err
 	}
