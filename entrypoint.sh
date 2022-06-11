@@ -30,11 +30,11 @@ if test -z "${INPUT_BUCKET}"; then
 fi
 
 DELETE_OBJECTS="${INPUT_DELETE_OBJECTS}"
-if [[ X"$DELETE_OBJECTS" == X"true" ]]; then
+if [[ X"$DELETE_OBJECTS" == X"false" ]]; then
   set -x
-  DELETE_OBJECTS="true"
-else
   DELETE_OBJECTS="false"
+else
+  DELETE_OBJECTS="true"
 fi
 
 echo "## Check User ##################"

@@ -15,6 +15,22 @@ a tools sync code to cdn, like aliyun oss.
 
 ### Use as Github Action
 
+- Sample Use
+
+```
+    - name: Sync Code to CDN
+      uses: x-actions/go-sync@main
+      input:
+        provider: "aliyun"
+        access-key: ${{ secrets.ACCESSKEYID }}
+        access-secret: ${{ secrets.ACCESSKEYSECRET }}
+        endpoint: "<ENDPOINT>"
+        bucket: "<BUCKETNAME>"
+        source: "/github/workspace/public"
+```
+
+- Advance Use
+
 ```
     - name: Sync Code to CDN
       uses: x-actions/go-sync@main
@@ -28,6 +44,8 @@ a tools sync code to cdn, like aliyun oss.
         exclude: "str1,str2"  # .git,.DS_Store
         source: "/github/workspace/public"
         ignore-expr: ""  # "<li>Build <small>&copy; .*</small></li>"
+        delete-objects: true
+        exclude-delete-objects: "<relative-of-source-path>,<relative-of-source-file>"
 ```
 
 ### Usage as command line
@@ -57,7 +75,10 @@ make all
   -bucket "dev-blog-xiexianbin-cn" \
   -endpoint "oss-cn-hangzhou.aliyuncs.com" \
   -source "/Users/xiexianbin/workspace/code/github.com/xiexianbin/note/public" \
-  -exclude ".git,.DS_Store"
+  -exclude ".git,.DS_Store" \
+  -ignore-expr "<li>Build <small>&copy; .*</small></li>" \
+  -delete-objects=true \
+  -exclude-delete-objects "images/ads/aliyun.png,images/xiexianbin.png"
 ```
 
 ## Others

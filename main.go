@@ -64,7 +64,7 @@ func init() {
 		"ignore expression string, comma-separated string, replace by empty string when calculate md5 summary")
 	flag.BoolVar(&deleteObjects, "delete-objects", true, "auto delete Object which not in source dir")
 	flag.StringVar(&excludeDeleteObjects, "exclude-delete-objects", "",
-		"exclude file or dir to delete in cdn provider, comma-separated string")
+		"exclude file or dir to delete in cdn provider, relative of source path, comma-separated string")
 
 	flag.BoolVar(&debug, "d", false, "Enable the debug flag to show detail log")
 	flag.BoolVar(&help, "h", false, "print this help")
